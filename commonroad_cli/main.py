@@ -1,13 +1,12 @@
 import argparse
 import os
 import sys
-sys.path.append('../commonroad-route-planner/commonroad_route_planner')
-#import commonroad_route_planner
+#sys.path.append('../commonroad-route-planner/commonroad_route_planner')
 from commonroad.common.file_reader import CommonRoadFileReader
-import commonroad_route_planner
-import commonroad_route_planner.route_planner
+#import commonroad_route_planner
+#import commonroad_route_planner.route_planner
 from commonroad_route_planner.route_planner import RoutePlanner
-# from commonroad_route_planner.utility import visualization as util_visualization
+
 
 
 """
@@ -24,6 +23,9 @@ The tool must be packaged efficiently to allow fast deployment.
 
 def find_min_length_route(commonroad_file):
     # read in scenario and planning problem set
+    if not os.path.isfile(commonroad_file):
+        print('commonroad file not found')
+        return None
     scenario, planning_problem_set = CommonRoadFileReader(commonroad_file).open()
     planning_problem = list(planning_problem_set.planning_problem_dict.values())[0]
 
@@ -52,7 +54,7 @@ def main():
     argparser.add_argument(
         '--commonroad',
         metavar='C',
-        default='../commonroad-route-planner/scenarios/USA_Peach-2_1_T-1.xml',
+        default='',
         help='Choose an absolute path of a commonroad file to find the length of')
     argparser.add_argument(
         '--unit',
@@ -63,7 +65,8 @@ def main():
 
     length = find_min_length_route(args.commonroad)
     if length is None:
-    	return None
+        print('length not found')
+        return None
     
     if args.unit == 'miles':
         length = length * 0.000621371
